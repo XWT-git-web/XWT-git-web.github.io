@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#1e4d3d"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="知间"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="50 分钟专注，10 分钟休息，每天 8 轮，每周 6 天。离线学习打卡。"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/favicon.svg"><link rel="apple-touch-icon" href="/icon-192.png"><link rel="stylesheet" href="/style.css"><title>知间 · 离线学习打卡</title></head><body><div id="appRoot" data-user-id="offline" data-identifier="离线模式">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#today" aria-label="知间首页">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>知间<span class="brand-dot">.</span></span>
+      </a>
+      <div class="sidebar-nav-label">你的学习空间</div>
+      <nav class="nav" aria-label="主导航">
+        <a class="nav-item active" href="#today"><span class="nav-icon">◫</span> 今日专注</a>
+        <a class="nav-item" href="#week"><span class="nav-icon">▦</span> 每周打卡</a>
+        <button class="nav-item" id="settingsNav" type="button"><span class="nav-icon">⚙</span> 提醒设置</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-quote"><span class="quote-mark">“</span><p>把时间留给重要的事，<br>把进步交给每一天。</p></div>
+        <div class="sidebar-version">FOCUS, ONE SESSION AT A TIME</div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="today">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>知间<span class="brand-dot">.</span></div>
+        <div class="topbar-right"><span class="sync-status" id="syncStatus">仅本机保存</span><span class="today-label" id="todayDate"></span><button class="icon-button" id="settingsTop" type="button" aria-label="提醒设置">⚙</button></div>
+      </header>
+
+      <section class="greeting">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR STUDY COMPANION</div><h1 id="greetingTitle">今天，也一起好好学习。</h1><p>专注当下的 50 分钟，剩下的交给时间。</p></div>
+        <div class="greeting-decoration" aria-hidden="true"><i></i><i></i><i></i></div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="timer-card" aria-labelledby="timerHeading">
+          <div class="card-header"><div><span class="section-kicker">FOCUS TIMER</span><h2 id="timerHeading">专注计时</h2></div><span class="phase-badge" id="phaseBadge">准备开始</span></div>
+          <div class="timer-body">
+            <div class="timer-ring" id="timerRing" role="timer" aria-live="off" aria-label="剩余时间">
+              <div class="ring-inner"><div class="ring-leaf" aria-hidden="true">✳</div><div class="timer-time" id="timerTime">50:00</div><div class="timer-caption" id="timerCaption">准备好就开始吧</div></div>
+            </div>
+            <div class="session-row"><span>今日进度</span><strong id="sessionFraction">0 / 8 轮</strong></div>
+            <div class="session-dots" id="sessionDots" aria-label="今日完成轮数"></div>
+            <div class="timer-actions"><button class="primary-button" id="primaryAction" type="button"><span class="button-symbol" id="actionSymbol">▶</span><span id="actionLabel">开始学习</span></button><button class="secondary-button" id="secondaryAction" type="button" hidden>结束本轮</button></div>
+            <p class="timer-hint" id="timerHint">每轮学习 50 分钟，然后休息 10 分钟</p>
+          </div>
+        </section>
+
+        <div class="right-column">
+          <section class="daily-card" aria-labelledby="dailyHeading">
+            <div class="card-header"><div><span class="section-kicker">TODAY'S GOAL</span><h2 id="dailyHeading">今日目标</h2></div><span class="tiny-sun" aria-hidden="true">✺</span></div>
+            <div class="daily-value"><strong id="dailyCount">0</strong><span>/ 8 次</span></div>
+            <div class="progress-track"><div class="progress-fill" id="dailyProgress"></div></div>
+            <p id="dailyMessage">完成第一轮，让今天有个好开始。</p>
+            <div class="daily-footer"><span>累计专注</span><strong id="dailyMinutes">0 分钟</strong></div>
+          </section>
+          <section class="next-card"><span class="section-kicker">UP NEXT</span><div class="next-card-content"><div class="next-icon" id="nextIcon">☕</div><div><h3 id="nextTitle">专注后的休息</h3><p id="nextDescription">完成一轮后，给自己 10 分钟放松。</p></div></div></section>
+        </div>
+      </div>
+
+      <section class="week-section" id="week" aria-labelledby="weekHeading">
+        <div class="week-heading"><div><span class="section-kicker">WEEKLY RHYTHM</span><h2 id="weekHeading">这一周的坚持</h2><p>一周完成 6 天，每天完成 8 轮学习。</p></div><div class="week-count"><strong id="weekCount">0</strong><span>/ 6 天达标</span></div></div>
+        <div class="week-days" id="weekDays"></div>
+        <div class="week-foot"><span class="legend-dot"></span> 完成 8 轮即点亮当天 <span class="week-range" id="weekRange"></span></div>
+      </section>
+      <footer class="page-footer">一步一步，刚刚好。<span>© 知间</span></footer>
+    </main>
+  </div>
+
+  <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsHeading">
+    <form method="dialog" class="settings-panel">
+      <div class="settings-head"><div><span class="section-kicker">MAKE IT YOURS</span><h2 id="settingsHeading">提醒设置</h2></div><button class="close-button" value="close" aria-label="关闭">×</button></div>
+      <p class="settings-intro">安排一个适合自己的学习节奏。</p><p class="account-line" id="accountLabel"></p>
+      <label class="setting-field" for="startTime"><span><strong>每天开始时间</strong><small>到点提醒你开始第一轮学习</small></span><input id="startTime" type="time" value="09:00"></label>
+      <label class="setting-field" for="restDay"><span><strong>每周休息日</strong><small>其余 6 天作为打卡日</small></span><select id="restDay"><option value="0">星期日</option><option value="1">星期一</option><option value="2">星期二</option><option value="3">星期三</option><option value="4">星期四</option><option value="5">星期五</option><option value="6">星期六</option></select></label>
+      <label class="setting-toggle"><span><strong>声音提醒</strong><small>阶段结束时播放提示音</small></span><input id="soundEnabled" type="checkbox" checked><span class="switch"></span></label>
+      <div class="notification-box"><div><strong>桌面通知</strong><p id="notificationStatus">允许通知后，学习与休息切换时会提醒你。</p></div><button id="notificationButton" type="button">开启通知</button></div>
+      <p class="settings-note">提醒需要保持网页打开；浏览器关闭后无法发送定时通知。计时、设置和打卡记录仅保存在本设备。清除浏览器数据会删除记录。</p>
+      <button class="save-button" id="saveSettings" value="save">保存设置</button>
+      <button class="logout-button" id="logoutButton" type="button" hidden>退出登录</button>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div><script src="/app.js" defer></script><script src="/pwa.js" defer></script></body></html>
