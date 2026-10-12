@@ -1,40 +1,53 @@
 # 知间 · 离线学习打卡
 
-![知间图标](icon-192.png)
+每天学习 50 分钟、休息 10 分钟，目标每天 8 轮、每周 6 天。阶段结束会响铃；Android 版还会在计时期间退到后台时安排系统通知。
 
-每天专注一点：学习 50 分钟，休息 10 分钟；每天目标 8 轮，每周目标 6 天。
+## 下载和安装
 
-## 直接使用
+在 [GitHub 下载页](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/tag/v1.1.0) 选择与你设备对应的文件：
 
-**[打开知间并添加到桌面](https://xwt-git-web.github.io/)**
+| 设备 | 直接下载 | 安装方法 |
+| --- | --- | --- |
+| Windows 10/11 电脑（64 位） | [Windows 安装程序 EXE](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/download/v1.1.0/Zhijian-Windows-1.1.0-x64.exe) | 下载后双击安装。 |
+| Mac 电脑（Apple 芯片或 Intel 芯片） | [macOS 安装映像 DMG](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/download/v1.1.0/Zhijian-macOS-1.1.0-universal.dmg) | 打开 DMG，将“知间”拖进“应用程序”。 |
+| Android 手机和平板 | [Android 安装包 APK](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/download/v1.1.0/Zhijian-Android-1.1.0.apk) | 下载后打开 APK，按系统提示允许该来源安装。首次计时请允许通知。 |
+| iPhone / iPad | [打开网页版](https://xwt-git-web.github.io/) | 用 Safari 打开，点“分享”→“添加到主屏幕”。 |
 
-打开后点页面右下角的“安装知间”，或按设备操作：
+Windows、Mac 安装文件尚未购买代码签名证书，系统可能显示“未知发布者”或无法验证开发者。请只从本仓库的发布页下载，并自行核对来源。iPhone/iPad 暂时没有可公开下载的 IPA 安装包；苹果要求应用签名和相应的分发资格，而本项目维持零新增费用。
 
-| 设备 | 安装方法 |
-| --- | --- |
-| Windows、macOS、Linux | 用 Chrome 或 Edge 打开上面的链接，点击地址栏中的安装图标，或在浏览器菜单中选择“安装应用”。 |
-| Android 手机、平板 | 用 Chrome 打开链接，选择菜单中的“添加到主屏幕”或“安装应用”。 |
-| iPhone、iPad | 用 Safari 打开链接，点击“分享”→“添加到主屏幕”。 |
+GitHub 与 GitHub Pages 在中国内地的连通情况因网络而异。发布前请让一位没有 VPN 的同学分别试一下下载页和网页版；本仓库无法保证它们在每个地区都可访问。
 
-首次打开需要网络；此后应用资源会缓存到本机，可以断网使用。建议安装前请一位没有 VPN 的同学用手机流量测试链接是否能打开。不同地区、运营商的访问情况可能不同。
+## 数据与提醒
 
-## 下载
+- 无需账号，也没有服务器或数据库。记录、设置和正在进行的计时保存在当前设备。
+- **电脑、手机和平板不会自动同步记录。** 不同安装方式的本地记录也不会自动迁移；卸载、清除应用数据可能删除记录。
+- Windows 和 Mac 版需保持应用运行，才能在计时结束时响铃。Android 版可在后台发送系统通知；实际准点程度受通知权限和设备省电设置影响。
+- iPhone/iPad 网页版需保持页面打开；锁屏或后台时，系统可能暂停计时铃声，重新打开后才更新进度。
+- 可设置每天开始提醒时间、每周休息日和声音开关。Android 版的每日开始提醒使用系统通知。
 
-**[点击下载离线网页包 ZIP](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/latest/download/zhijian-offline-pwa.zip)**
+## 源码与构建
 
-ZIP 包含运行所需的 HTML、CSS、JavaScript、图标和离线缓存文件，适合留存或发布到支持 HTTPS 的静态网站。它是“添加到桌面”的网页应用文件，**不是双击安装的 Windows／macOS 程序或 Android APK**。普通用户请通过上面的“直接使用”链接安装。
+网页应用源码在仓库根目录。桌面版在 [`native/desktop`](native/desktop)，Android 版在 [`native/mobile`](native/mobile)。
 
-## 功能与数据
+桌面版需要 Node.js：
 
-- 学习 50 分钟、休息 10 分钟；阶段结束时响铃并尝试发送通知。
-- 每天 8 轮、每周 6 天的进度展示。
-- 可设置每日开始提醒时间、每周休息日和声音开关。
-- 不需要注册，也不连接数据库；打卡记录、设置和当前计时只保存在当前设备。
+```bash
+cd native/desktop
+npm ci
+npm run dist -- --mac dmg --universal
+# Windows 上使用：npm run dist -- --win nsis --x64
+```
 
-各设备的记录**不会自动同步**。清除该站点的浏览器数据或卸载应用可能删除记录；旧版网站的云端记录不会自动转入离线版。
+Android 版需要 Node.js、JDK 21 和 Android SDK：
 
-浏览器应用需要保持打开才能按时响铃。手机锁屏、后台或省电模式可能挂起应用，提醒可能在重新打开后才出现。
+```bash
+cd native/mobile
+npm ci
+npm run sync
+cd android
+./gradlew assembleDebug
+```
 
-## 自己部署
+GitHub 上提供的正式 APK 使用项目维护者保存的发布密钥签名；仓库不包含私钥。自行构建的调试 APK 可用于个人测试，不能作为本项目的升级包。
 
-解压 ZIP，把全部文件放到支持 HTTPS 的静态网站根目录。`index.html` 是入口，`sw.js` 负责离线缓存。由于应用使用 Service Worker，直接双击本地 `index.html` 无法完成添加到桌面安装。
+网页离线文件可在 [v1.0.0 发布页](https://github.com/XWT-git-web/XWT-git-web.github.io/releases/tag/v1.0.0) 下载。首次打开网页版需要网络，其后可离线使用。

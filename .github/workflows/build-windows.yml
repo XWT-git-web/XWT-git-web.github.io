@@ -1,0 +1,29 @@
+name: Build Windows installer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: native/desktop/package-lock.json
+      - name: Install dependencies
+        working-directory: native/desktop
+        run: npm ci
+      - name: Build Windows installer
+        working-directory: native/desktop
+        run: npm run dist -- --win nsis --x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zhijian-windows-1.1.0
+          path: native/desktop/dist/Zhijian-Windows-1.1.0-x64.exe
+          if-no-files-found: error

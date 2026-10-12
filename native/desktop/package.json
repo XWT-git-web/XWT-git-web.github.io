@@ -1,0 +1,36 @@
+{
+  "name": "zhijian-desktop",
+  "productName": "知间",
+  "version": "1.1.0",
+  "description": "知间离线学习打卡桌面应用",
+  "main": "main.cjs",
+  "author": "XWT-git-web",
+  "license": "UNLICENSED",
+  "scripts": {
+    "prepare:assets": "node prepare.mjs",
+    "start": "npm run prepare:assets && electron .",
+    "dist": "npm run prepare:assets && electron-builder"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "cn.zhijian.study",
+    "productName": "知间",
+    "directories": { "output": "dist" },
+    "files": ["main.cjs", "renderer/**/*", "package.json"],
+    "asar": true,
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }],
+      "identity": null,
+      "category": "public.app-category.productivity",
+      "artifactName": "Zhijian-macOS-${version}-${arch}.${ext}"
+    },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "artifactName": "Zhijian-Windows-${version}-${arch}.${ext}"
+    },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true }
+  }
+}

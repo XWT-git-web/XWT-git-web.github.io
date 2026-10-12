@@ -1,0 +1,20 @@
+{
+  "name": "zhijian-mobile",
+  "version": "1.1.0",
+  "private": true,
+  "description": "知间离线学习打卡移动应用",
+  "scripts": {
+    "prepare:assets": "node prepare.mjs",
+    "sync": "npm run prepare:assets && cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/local-notifications": "^8.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "8.5.3",
+    "esbuild": "0.25.12"
+  }
+}
