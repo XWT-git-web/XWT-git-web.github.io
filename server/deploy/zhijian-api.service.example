@@ -1,0 +1,20 @@
+[Unit]
+Description=Zhijian Study API
+After=network.target
+
+[Service]
+Type=simple
+User=zhijian
+Group=zhijian
+WorkingDirectory=/opt/zhijian/server
+EnvironmentFile=/etc/zhijian/api.env
+ExecStart=/opt/zhijian/server/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/zhijian
+
+[Install]
+WantedBy=multi-user.target

@@ -2,12 +2,12 @@ import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 if (Capacitor.isNativePlatform()) {
-  const KEY = 'zhijian-study-v2:offline';
   const timerIds = [501, 502];
   const dailyIds = [601, 602, 603, 604, 605, 606, 607];
   const descriptors = ids => ids.map(id => ({ id }));
   const getState = () => {
-    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+    const userId = document.getElementById('appRoot')?.dataset.userId || 'offline';
+    try { return JSON.parse(localStorage.getItem(`zhijian-study-v2:${userId}`) || 'null'); } catch { return null; }
   };
   const permissionGranted = async () => (await LocalNotifications.checkPermissions()).display === 'granted';
   let updateQueue = Promise.resolve();
@@ -77,6 +77,7 @@ if (Capacitor.isNativePlatform()) {
   }
   document.getElementById('saveSettings')?.addEventListener('click', () => { setTimeout(() => void serialized(scheduleDaily), 0); });
   document.addEventListener('visibilitychange', () => { void serialized(scheduleTimer); });
+  document.addEventListener('zhijian-account-ready', () => { void serialized(scheduleDaily); });
   window.addEventListener('focus', () => { void serialized(scheduleTimer); });
   void serialized(scheduleDaily);
 }

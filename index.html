@@ -74,8 +74,21 @@
       <div class="notification-box"><div><strong>桌面通知</strong><p id="notificationStatus">允许通知后，学习与休息切换时会提醒你。</p></div><button id="notificationButton" type="button">开启通知</button></div>
       <p class="settings-note">提醒需要保持网页打开；浏览器关闭后无法发送定时通知。计时、设置和打卡记录仅保存在本设备。清除浏览器数据会删除记录。</p>
       <button class="save-button" id="saveSettings" value="save">保存设置</button>
+      <button class="logout-button" id="accountButton" type="button" hidden>账号管理</button>
       <button class="logout-button" id="logoutButton" type="button" hidden>退出登录</button>
     </form>
   </dialog>
+  <dialog class="settings-dialog" id="accountDialog" aria-labelledby="accountHeading">
+    <div class="settings-panel"><div class="settings-head"><div><span class="section-kicker">YOUR ACCOUNT</span><h2 id="accountHeading">账号管理</h2></div><button class="close-button" id="closeAccount" type="button" aria-label="关闭">×</button></div>
+      <p class="settings-intro">修改密码后，其他设备需要重新登录。</p>
+      <form class="auth-form" id="passwordForm"><label for="currentPassword">当前密码</label><input id="currentPassword" type="password" autocomplete="current-password" minlength="10" required><label for="newPassword">新密码</label><input id="newPassword" type="password" autocomplete="new-password" minlength="10" required><label for="confirmNewPassword">确认新密码</label><input id="confirmNewPassword" type="password" autocomplete="new-password" minlength="10" required><button class="save-button" type="submit">修改密码</button></form>
+      <p class="auth-error" id="accountError" role="alert" hidden></p><p class="account-success" id="accountSuccess" role="status" hidden></p>
+      <div class="account-danger"><strong>删除账号与云端数据</strong><p>此操作会永久删除账号、所有打卡记录和会话，无法恢复。</p><label for="deletePassword">输入当前密码以确认</label><input id="deletePassword" type="password" autocomplete="current-password" minlength="10"><button id="deleteAccount" type="button">永久删除账号</button></div>
+    </div>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-</div><script src="/app.js" defer></script><script src="/pwa.js" defer></script></body></html>
+</div>
+<div class="auth-page" id="authPage" hidden>
+  <aside class="auth-story"><div class="auth-brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>知间<span class="brand-dot">.</span></div><div class="auth-story-content"><div class="auth-eyebrow">ONE SESSION AT A TIME</div><h1>给今天，<br>留一段专注时间。</h1><p>50 分钟学习，10 分钟休息。<br>每天 8 轮，每周坚持 6 天。</p><div class="auth-illustration" aria-hidden="true"><div class="auth-orbit"><span>50</span><small>MIN</small></div><i></i><i></i><i></i></div></div><div class="auth-story-foot">一步一步，刚刚好。</div></aside>
+  <main class="auth-main"><div class="auth-card"><span class="auth-card-kicker">WELCOME TO ZHIJIAN</span><h2 id="authHeading">欢迎回来</h2><p class="auth-subtitle">用邮箱或手机号登录，在设备间同步学习记录。</p><div class="auth-tabs"><button type="button" class="selected" id="loginTab">登录</button><button type="button" id="registerTab">创建账号</button></div><form class="auth-form" id="authForm"><label for="authIdentifier">邮箱或手机号</label><input id="authIdentifier" name="identifier" type="text" autocomplete="username" required placeholder="请输入邮箱或手机号"><label for="authPassword">密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="10" required placeholder="至少 10 位密码"><div id="confirmGroup" hidden><label for="authConfirm">确认密码</label><input id="authConfirm" name="confirm" type="password" autocomplete="new-password" minlength="10" placeholder="再次输入密码"></div><p class="auth-error" id="authError" role="alert" hidden></p><button class="auth-submit" id="authSubmit" type="submit">登录并继续 ↗</button></form><p class="auth-footnote">账号目前无法找回密码，请妥善保管。网络中断后，已登录的设备可继续计时打卡。</p></div></main>
+</div><script src="/cloud-config.js" defer></script><script src="/cloud.js" defer></script><script src="/pwa.js" defer></script></body></html>
