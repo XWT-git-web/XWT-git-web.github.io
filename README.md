@@ -1,6 +1,12 @@
 # 知间 · 离线学习打卡
 
+<img src="icon-192.png" alt="知间 App Logo" width="96" height="96">
+
 每天学习 50 分钟、休息 10 分钟，目标每天 8 轮、每周 6 天。阶段结束会响铃；Android 版还会在计时期间退到后台时安排系统通知。
+
+## 界面预览
+
+![知间桌面版界面：专注计时、今日目标和每周打卡](assets/screenshots/desktop.png)
 
 ## 下载和安装
 
