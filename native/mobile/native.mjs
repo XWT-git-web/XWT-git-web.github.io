@@ -54,10 +54,27 @@ if (Capacitor.isNativePlatform()) {
   async function requestPermission() {
     const result = await LocalNotifications.requestPermissions();
     if (result.display === 'granted') await scheduleDaily();
+    await refreshPermissionStatus();
+  }
+
+  async function refreshPermissionStatus() {
+    const granted = await permissionGranted();
+    const button = document.getElementById('notificationButton');
+    button.disabled = false;
+    button.textContent = granted ? '已开启' : '开启通知';
+    document.getElementById('notificationStatus').textContent = granted
+      ? '系统通知已开启，退到后台也会提醒你。'
+      : '允许系统通知后，退到后台也能收到计时提醒。';
   }
 
   document.getElementById('primaryAction')?.addEventListener('click', () => { void requestPermission().catch(() => {}); });
-  document.getElementById('notificationButton')?.addEventListener('click', () => { void requestPermission().catch(() => {}); });
+  document.getElementById('notificationButton')?.addEventListener('click', event => {
+    event.stopImmediatePropagation();
+    void requestPermission().catch(() => {});
+  }, true);
+  for (const id of ['settingsNav', 'settingsTop']) {
+    document.getElementById(id)?.addEventListener('click', () => { setTimeout(() => void refreshPermissionStatus().catch(() => {}), 0); });
+  }
   document.getElementById('saveSettings')?.addEventListener('click', () => { setTimeout(() => void serialized(scheduleDaily), 0); });
   document.addEventListener('visibilitychange', () => { void serialized(scheduleTimer); });
   window.addEventListener('focus', () => { void serialized(scheduleTimer); });
