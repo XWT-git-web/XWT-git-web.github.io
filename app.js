@@ -17,7 +17,7 @@
     pendingEvents: [],
     settingsDirty: false,
     legacyImported: false,
-    timer: { phase: 'focus', status: 'idle', remaining: FOCUS, endAt: null, day: todayKey() },
+    timer: { phase: 'focus', status: 'idle', remaining: FOCUS, endAt: null, day: todayKey(), sessionId: null },
     settings: { startTime: '09:00', restDay: 0, sound: true },
     lastStartReminderDate: ''
   });
@@ -51,6 +51,7 @@
   const completed = key => Math.min(GOAL, Math.max(0, Number(state.remoteRecords[key]) || 0) + state.pendingEvents.filter(event => event.day === key).length);
   const todayCompleted = () => completed(todayKey());
   function syncCloud() {
+    if (window.zhijianCloud) { window.zhijianCloud.sync(); return; }
     $('syncStatus').textContent = '仅本机保存';
     $('syncStatus').classList.add('offline');
   }
@@ -101,7 +102,7 @@
     if (t.status !== 'running' || Date.now() < t.endAt) return;
     if (t.phase === 'focus') {
       const key = t.day || todayKey();
-      state.pendingEvents.push({ id: crypto.randomUUID(), day: key });
+      state.pendingEvents.push({ id: t.sessionId || crypto.randomUUID(), day: key });
       if (completed(key) >= GOAL) {
         t.phase = 'done'; t.status = 'idle'; t.remaining = 0; t.endAt = null;
         notify('今天的目标完成啦', '8 轮学习全部完成，好好休息吧。');
@@ -113,21 +114,27 @@
       }
     } else if (t.phase === 'break') {
       t.phase = 'focus'; t.status = 'idle'; t.remaining = FOCUS; t.endAt = null;
-      t.day = todayKey();
+      t.day = todayKey(); t.sessionId = null;
       notify('休息结束', '准备好就开始下一轮 50 分钟学习。');
     }
+    state.timerDirty = true;
     persist();
     syncCloud();
   }
   function normalizeDay() {
     const t = state.timer;
+    let changed = false;
     if (t.day !== todayKey() && t.status !== 'running') {
       state.timer = defaults().timer;
-      persist();
+      state.timerDirty = true;
+      changed = true;
     }
-    if (completed(todayKey()) >= GOAL && state.timer.day === todayKey() && state.timer.status !== 'running') {
+    if (completed(todayKey()) >= GOAL && state.timer.day === todayKey() && state.timer.status !== 'running' && state.timer.phase !== 'done') {
       state.timer = { phase: 'done', status: 'idle', remaining: 0, endAt: null, day: todayKey() };
+      state.timerDirty = true;
+      changed = true;
     }
+    if (changed) { persist(); syncCloud(); }
   }
   function formatTime(seconds) { return `${pad(Math.floor(seconds / 60))}:${pad(seconds % 60)}`; }
   function weekStart(date) { const result = new Date(date.getFullYear(), date.getMonth(), date.getDate()); result.setDate(result.getDate() - ((result.getDay() + 6) % 7)); return result; }
@@ -194,11 +201,13 @@
     } else {
       if (t.phase === 'focus' && completed(todayKey()) >= GOAL) return;
       if (t.day !== todayKey() && t.phase === 'focus') t.day = todayKey();
+      if (t.phase === 'focus' && t.status === 'idle') t.sessionId = crypto.randomUUID();
       t.endAt = Date.now() + t.remaining * 1000; t.status = 'running';
       toast(t.phase === 'break' ? '休息开始，放松一下' : '专注开始，加油');
       if (state.settings.sound) chime();
     }
-    persist(); render();
+    state.timerDirty = true;
+    persist(); render(); syncCloud();
   });
   $('secondaryAction').addEventListener('click', () => {
     const t = state.timer;
@@ -209,7 +218,8 @@
       state.timer = { phase:'focus', status:'idle', remaining:FOCUS, endAt:null, day:todayKey() };
       toast('本轮已重置');
     } else return;
-    persist(); render();
+    state.timerDirty = true;
+    persist(); render(); syncCloud();
   });
   const dialog = $('settingsDialog');
   function updateNotificationStatus() {
@@ -223,7 +233,7 @@
     $('startTime').value = state.settings.startTime;
     $('restDay').value = String(state.settings.restDay);
     $('soundEnabled').checked = !!state.settings.sound;
-    $('accountLabel').textContent = '离线模式 · 数据保存在本设备';
+    $('accountLabel').textContent = window.zhijianCloud ? `已登录 · ${account.dataset.identifier}` : '离线模式 · 数据保存在本设备';
     updateNotificationStatus();
     dialog.showModal();
   }
@@ -240,7 +250,7 @@
     state.settings.startTime = /^\d{2}:\d{2}$/.test($('startTime').value) ? $('startTime').value : '09:00';
     state.settings.restDay = Number($('restDay').value);
     state.settings.sound = $('soundEnabled').checked;
-    state.settingsDirty = false;
+    state.settingsDirty = !!window.zhijianCloud;
     persist(); render(); dialog.close(); toast('提醒设置已保存'); syncCloud();
   });
   dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
@@ -261,6 +271,7 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
   window.addEventListener('focus', tick);
   window.addEventListener('storage', event => { if (event.key === KEY) location.reload(); });
+  window.zhijianCloud?.attach(state, persist, render);
   tick();
   setInterval(tick, 1000);
   syncCloud();
